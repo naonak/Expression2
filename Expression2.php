@@ -4,8 +4,6 @@
  * @author Fabien Evain
  * @dependencies None
  * 
- * todo : handling "!important"
- * 
  **/
 class Expression2 extends Plugins {
 
@@ -77,7 +75,14 @@ class Expression2 extends Plugins {
 	
 	static function operate($operation, $property = null, $force = false) {
 
-		$value = $operation;
+		$operation = trim($operation);
+
+		$important = false;
+		if(preg_match('/!important$/', $operation)) {
+			$important = true;
+			$operation = preg_replace('/!important$/', '', $operation);
+		}
+
 		if($operation == 'auto' || $operation == 'inherit') {
 			return false;
 		}
@@ -124,6 +129,11 @@ class Expression2 extends Plugins {
 		} else {
 			$operation = $result.$unit;
 		}
+		
+		if($important) {
+			$operation .= '!important';
+		}
+		
 		return $operation;
 	}
 
